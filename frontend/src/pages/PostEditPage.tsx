@@ -25,7 +25,7 @@ export function PostEditPage() {
     if (post) {
       setTitle(post.title);
       setContent(post.content);
-      setSelectedTags(post.tags?.map((t: { id: number }) => t.id) || []);
+      setSelectedTags(post.edges?.tags?.map((t: { id: number }) => t.id) || []);
     }
   }, [post]);
 

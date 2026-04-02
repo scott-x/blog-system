@@ -83,11 +83,11 @@ export function PostDetailPage() {
   const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation();
   const [showBackTop, setShowBackTop] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const toc = useRef<TocItem[]>([]);
+  const [toc, setToc] = useState<TocItem[]>([]);
 
   useEffect(() => {
     if (post?.content) {
-      toc.current = extractToc(post.content);
+      setToc(extractToc(post.content));
     }
   }, [post?.content]);
 
@@ -119,14 +119,14 @@ export function PostDetailPage() {
       </div>
 
       {/* 目录居中固定在顶部导航栏下方 */}
-      {toc.current.length > 2 && (
+      {toc.length > 2 && (
         <aside className="toc-sidebar">
           <div className="toc-sidebar-header">
             <span>📑 目录</span>
           </div>
           <nav className="toc-sidebar-nav">
             <ul>
-              {toc.current.map((item, i) => (
+              {toc.map((item, i) => (
                 <li key={i} className={`toc-item level-${item.level}`}>
                   <a href={`#${item.id}`} className="toc-link">
                     {item.text}
@@ -164,9 +164,9 @@ export function PostDetailPage() {
             )}
           </div>
 
-          {post.tags && post.tags.length > 0 && (
+          {post.edges?.tags && post.edges.tags.length > 0 && (
             <div className="post-detail-tags">
-              {post.tags.map((tag) => (
+              {post.edges.tags.map((tag) => (
                 <span key={tag.id} className="tag-badge" style={{ backgroundColor: tag.background || '#667eea' }}>{tag.name}</span>
               ))}
             </div>
