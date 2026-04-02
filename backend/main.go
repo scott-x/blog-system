@@ -9,8 +9,10 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/signal"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"blog-system/ent"
@@ -100,10 +102,30 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen on port %s: %v", port, err)
 	}
+
+	// Create HTTP server with timeouts for graceful shutdown
+	srv := &http.Server{
+		Handler: r,
+		Addr:    ":" + port,
+	}
+
+	// Handle graceful shutdown on SIGINT/SIGTERM
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		<-quit
+		log.Println("shutting down server...")
+		if err := srv.Close(); err != nil {
+			log.Printf("server shutdown error: %v", err)
+		}
+	}()
+
 	log.Printf("server starting on port %s", port)
-	if err = (&http.Server{Handler: r}).Serve(ln); err != nil {
+	if err = srv.Serve(ln); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("server failed: %v", err)
 	}
+	log.Println("server stopped")
 }
 
 func loginHandler(c *gin.Context) {
