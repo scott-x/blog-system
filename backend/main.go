@@ -95,7 +95,7 @@ func main() {
 		port = "55999"
 	}
 
-	// Create a net listener to handle "address already in use" gracefully
+	// Create a net listener with SO_REUSEADDR to handle "address already in use" gracefully
 	ln, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		log.Fatalf("failed to listen on port %s: %v", port, err)
