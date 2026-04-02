@@ -89,7 +89,21 @@ func main() {
 		}
 	}
 
-	r.Run(":55999")
+	// Get port from environment variable, default to 55999
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "55999"
+	}
+
+	// Create a net listener to handle "address already in use" gracefully
+	ln, err := net.Listen("tcp", ":"+port)
+	if err != nil {
+		log.Fatalf("failed to listen on port %s: %v", port, err)
+	}
+	log.Printf("server starting on port %s", port)
+	if err = (&http.Server{Handler: r}).Serve(ln); err != nil {
+		log.Fatalf("server failed: %v", err)
+	}
 }
 
 func loginHandler(c *gin.Context) {
