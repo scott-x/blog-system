@@ -101,7 +101,7 @@ export function PostList() {
               <h2 className="post-title">{post.title}</h2>
               <p className="post-content">{post.content.substring(0, 150)}...</p>
               <div className="post-tags">
-                {post.tags?.map((tag) => (
+                {post.edges?.tags?.map((tag) => (
                   <span
                     key={tag.id}
                     className="tag-badge"
