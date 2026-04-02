@@ -27,3 +27,8 @@ frontend/.DS_Store
 # OS
 .DS_Store
 Thumbs.db
+
+# Project directories (local only, never commit)
+articles/
+health-tips/
+work-log/
